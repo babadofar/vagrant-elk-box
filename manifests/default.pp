@@ -22,7 +22,8 @@ elasticsearch::instance { 'es-01':
   'cluster.name' => 'vagrant_elasticsearch',
   'index.number_of_replicas' => '0',
   'index.number_of_shards'   => '1',
-  'network.host' => '0.0.0.0'
+  'network.host' => '0.0.0.0',
+  'marvel.agent.enabled' => false #DISABLE marvel data collection. We are only interested in using Sense, aren't we
   },        # Configuration hash
   init_defaults => { }, # Init defaults hash
   before => Exec['start kibana']

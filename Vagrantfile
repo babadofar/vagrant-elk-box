@@ -7,7 +7,7 @@ VAGRANTFILE_API_VERSION = "2"
 $script = <<SCRIPT
 # Install wget
 sudo apt-get install -qy wget;
-
+sudo apt-get install -qy git;
 sed -e '/templatedir/ s/^#*/#/' -i.back /etc/puppet/puppet.conf
 
 mkdir -p /etc/puppet/modules;
@@ -26,12 +26,14 @@ fi
 if [ ! -d /etc/puppet/modules/logstash ]; then
  puppet module install elasticsearch-logstash
 fi
+
 if [ ! -f /etc/init.d/kibana ]; then
  sudo cp /vagrant/kibana4_init /etc/init.d/kibana
  sudo sed -i 's/\r//' /etc/init.d/kibana
  sudo chmod +x /etc/init.d/kibana
  sudo update-rc.d kibana defaults
 fi
+
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -42,12 +44,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.box = "puppetlabs/ubuntu-14.04-64-puppet"
-  config.vm.network :forwarded_port, guest: 5601, host: 5601
+  config.vm.network :forwarded_port, guest: 5601, host: 5602
   config.vm.network :forwarded_port, guest: 9200, host: 9200
   config.vm.network :forwarded_port, guest: 9300, host: 9300
 
   config.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--cpus", "2", "--memory", "2048"]
+      vb.customize ["modifyvm", :id, "--cpus", "4", "--memory", "4096"]
   end
 
   config.vm.provider "vmware_fusion" do |v, override|
